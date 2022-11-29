@@ -9,6 +9,15 @@ module FreeFall
   integer, parameter :: iprec=4  ! 4 or 8
   real(kind=iprec), parameter  :: eps=.5e-2
 
+  interface Re_iter
+     module procedure Re_iter_count, Re_iter_nocount
+  end interface Re_iter
+
+  interface Re_bisection
+     module procedure Re_bisection_count, Re_bisection_nocount
+  end interface Re_bisection
+
+  
 contains
 
   function f_cliftgauvin(Re)
@@ -33,30 +42,54 @@ contains
   
   end function Re_aersett
 
-  function Re_bisection(R)
-    real(kind=iprec)  :: Re_bisection
+  function Re_bisection_nocount(R)
+    real(kind=iprec)  :: Re_bisection_nocount
     real(kind=iprec), intent(IN)  :: R
     real(kind=iprec)  :: Re_lo, Re_hi, err
     
     Re_lo=0.
     Re_hi=R
-    Re_bisection=R
-    err=error(R,Re_bisection)
+    Re_bisection_nocount=R
+    err=error(R,Re_bisection_nocount)
     do while(err>eps)
-       Re_bisection=0.5*(Re_hi+Re_lo)
-       if(R/(1+f_cliftgauvin(Re_bisection))<Re_bisection)then
-          Re_hi=Re_bisection
+       Re_bisection_nocount=0.5*(Re_hi+Re_lo)
+       if(R/(1+f_cliftgauvin(Re_bisection_nocount))<Re_bisection_nocount)then
+          Re_hi=Re_bisection_nocount
        else
-          Re_lo=Re_bisection
+          Re_lo=Re_bisection_nocount
        endif
        err=(Re_hi-Re_lo)/Re_lo
     enddo
     
-  end function Re_bisection
+  end function Re_bisection_nocount
   
-  function Re_iter(R)
+  function Re_bisection_count(R, niter)
+    real(kind=iprec)  :: Re_bisection_count
+    integer, intent(OUT)         :: niter
+    real(kind=iprec), intent(IN)  :: R
+    real(kind=iprec)  :: Re_lo, Re_hi, err
+    
+    Re_lo=0.
+    Re_hi=R
+    Re_bisection_count=R
+    err=error(R,Re_bisection_count)
+    niter=0
+    do while(err>eps)
+       niter=niter+1
+       Re_bisection_count=0.5*(Re_hi+Re_lo)
+       if(R/(1+f_cliftgauvin(Re_bisection_count))<Re_bisection_count)then
+          Re_hi=Re_bisection_count
+       else
+          Re_lo=Re_bisection_count
+       endif
+       err=(Re_hi-Re_lo)/Re_lo
+    enddo
+    
+  end function Re_bisection_count
+  
+  function Re_iter_nocount(R)
     real(kind=iprec), intent(IN) :: R
-    real(kind=iprec) :: Re_iter
+    real(kind=iprec) :: Re_iter_nocount
     real(kind=iprec)             :: d, dprev, err
     
   ! Evaluate the delta function as a function of the virtual Reynolds number Re
@@ -67,13 +100,26 @@ contains
             d = 1./(1+f_cliftgauvin(R*(1+d))) - 1.
             err = abs(d-dprev)/(1+d)
         enddo
-        Re_iter=(1+d)*R
-  end function Re_iter
+        Re_iter_nocount=(1+d)*R
+  end function Re_iter_nocount
+      
+  function Re_iter_count(R, niter)
+    real(kind=iprec), intent(IN) :: R
+    integer, intent(OUT)         :: niter
+    real(kind=iprec) :: Re_iter_count
+    real(kind=iprec)             :: d, dprev, err
     
-  subroutine print_hello()
-
-    print*,'Hello World'
-
-  end subroutine print_hello
-  
+  ! Evaluate the delta function as a function of the virtual Reynolds number Re
+        d=0.
+        err=error(R,R)
+        niter=0
+        do while(err>eps)
+            niter=niter+1
+            dprev = d
+            d = 1./(1+f_cliftgauvin(R*(1+d))) - 1.
+            err = abs(d-dprev)/(1+d)
+        enddo
+        Re_iter_count=(1+d)*R
+  end function Re_iter_count
+    
 end module FreeFall
