@@ -10,16 +10,16 @@ program testspeed
   call testvalues(0., 4.)
   print*,'==============================================='
   print*,'RANGE 0. TO 1.'
-  call calcspeed(0., 1., 10000000)
+  call calcspeed(0., 1., 100000000)
   print*,'==============================================='
   print*,'RANGE 1. TO 2.'
-  call calcspeed(1., 2., 10000000)
+  call calcspeed(1., 2., 100000000)
   print*,'==============================================='
   print*,'RANGE 2. TO 3.'
-  call calcspeed(2., 3., 10000000)
+  call calcspeed(2., 3., 100000000)
   print*,'==============================================='
   print*,'RANGE 3. TO 4.'
-  call calcspeed(3., 4., 10000000)
+  call calcspeed(3., 4., 100000000)
   print*,'==============================================='
 
 end program testspeed

@@ -7,7 +7,7 @@ module FreeFall
   public :: Re_iter, Re_bisection, Re_aersett, iprec
   
   integer, parameter :: iprec=4  ! 4 or 8
-  real(kind=iprec), parameter  :: eps=.5e-2
+  real(kind=iprec), parameter  :: eps=2e-2
 
   interface Re_iter
      module procedure Re_iter_count, Re_iter_nocount
