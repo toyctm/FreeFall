@@ -1,0 +1,8 @@
+__pycache__/*
+*.png
+\#*
+*/\#*
+fortran/*.out
+fortran/*.mod
+*~
+*/*~
