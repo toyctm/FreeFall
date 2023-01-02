@@ -137,14 +137,15 @@ cg.logistic_fit()
 
 temp=298.15
 
-dar    = np.asarray([ 10**logd for logd in np.arange(-6.,-3,0.1) ])
-presar = np.linspace(20000,100000.,41)
+dar    = np.asarray([ 10**logd for logd in np.arange(-6.,-3,0.01) ])
+presar = np.linspace(20000,100000.,401)
 
 npp=presar.shape[0]
 nd=dar.shape[0]
 Rear=np.zeros((nd,npp))
 Vinf=np.zeros((nd,npp))
 Vfit=np.zeros((nd,npp))
+Vdar=np.zeros((nd,npp))
 cc_ar=np.zeros((nd,npp))
 
 # Make Fig 3 (without Slip-correction)
@@ -187,44 +188,40 @@ plt.close()
       
 
 # Make Fig 4 (with Slip-correction)
+Vfit_nocg=np.zeros((nd,npp))
+Vstokes_ar=np.zeros((nd,npp))
 for ip in range(npp):
    pres=presar[ip]
    air=chem.Mixture('air',T=temp,P=pres)
    print(pres)
    for id in range(nd):
       d = dar[id]
-      Vd, vdcor, re  = terminalspeed(air,d,g,rhop,cg.delta, freeslipcor=True)
-      Vd, vdcor_fit, re  = terminalspeed(air,d,g,rhop,cg.logistic_delta, freeslipcor=True)
+      dum, vdcor_fit, re  = terminalspeed(air,d,g,rhop,cg.logistic_delta, freeslipcor=True)
+      dum, vdcor_nocg, dum  = terminalspeed(air,d,g,rhop,stokes.delta, freeslipcor=True)
+      vd_stokes, dum2, dum  = terminalspeed(air,d,g,rhop,stokes.delta, freeslipcor=False)
       Cc = ccun(air,d)
       Rear[id,ip] = re
-      Vinf[id,ip] = vdcor
       Vfit[id,ip] = vdcor_fit
+      Vfit_nocg[id,ip] = vdcor_nocg
       cc_ar[id,ip] = Cc
+      Vdar[id,ip] = Vd
+      Vstokes_ar[id,ip] = vd_stokes
       
 fig,ax=plt.subplots(figsize=(4,3))      
-plt.contourf(presar/100.,dar*1.e6,Vinf, norm=colors.LogNorm(), levels=[1.e-5,1.e-4, 1.e-3, 1.e-2, 1.e-1, 1., 10., 14.])
 plt.xlabel (r'$P\ (hPa)$')
 plt.ylabel (r'$D\ (\mu{}m)$')
-plt.colorbar(format=ticker.FuncFormatter(fmt),label=r'$v_\infty{}\mathrm{(\,m\,s^{-1}})$')
-CS = plt.contour(presar/100.,dar*1.e6,Rear, levels=[0.1, 1., 10., 100., 1000.], colors='black')
-CS2 = plt.contour(presar/100.,dar*1.e6,cc_ar, levels=[1.01, 1.1, 1.5, 2., 10.], colors='gray')
+CF = plt.contourf(presar/100.,dar*1.e6,Vfit/Vstokes_ar, cmap=mpl.colormaps['bwr'], vmin=0.01, vmax=1.99)
+plt.colorbar(label=r'$\frac{v_\infty{}}{v_\infty{}^{Stokes}}$')
+CS = plt.contour(presar/100.,dar*1.e6,Vfit/Vfit_nocg, levels=[.1, .2, .3, .4, .5, .6, .7, .8, .9, .95, .98], colors='black')
+CS2 = plt.contour(presar/100.,dar*1.e6,Vfit_nocg/Vstokes_ar, levels=[1.02, 1.05, 1.1, 1.5, 2., 10.], colors='gray')
+CS3 = plt.contour(presar/100.,dar*1.e6,Rear, levels=[.1], colors='red')
 ax.clabel(CS, CS.levels, inline=True, fontsize=6)
 ax.clabel(CS2, CS2.levels, inline=True, fontsize=6)
 plt.yscale('log')
 ax.set_yticks([1.,10.,100.,1000.])
 plt.grid(color='black', linestyle=':', linewidth=0.5)
-plt.savefig('fig4_vinf.png',bbox_inches='tight',dpi=300)
+plt.savefig('fig4_vfit.png',bbox_inches='tight',dpi=300)
 plt.close()
 
-fig,ax=plt.subplots(figsize=(4,3))      
-plt.contourf(presar/100.,dar*1.e6,(Vfit-Vinf)/Vinf*100, levels=[-2., -1., -0.5, -0.1, 0.1, 0.5, 1., 2.], cmap='bwr')
-plt.xlabel (r'$P\ (hPa)$')
-plt.ylabel (r'$D\ (\mu{}m)$')
-plt.colorbar(label='Fit error (%)')
-plt.yscale('log')
-ax.set_yticks([1.,10.,100.,1000.])
-plt.grid(color='black', linestyle=':', linewidth=0.5)
-plt.savefig('fig4_fiterror.png',bbox_inches='tight',dpi=300)
-plt.close()
 
       
