@@ -147,6 +147,46 @@ Vinf=np.zeros((nd,npp))
 Vfit=np.zeros((nd,npp))
 cc_ar=np.zeros((nd,npp))
 
+# Make Fig 3 (without Slip-correction)
+for ip in range(npp):
+   pres=presar[ip]
+   air=chem.Mixture('air',T=temp,P=pres)
+   print(pres)
+   for id in range(nd):
+      d = dar[id]
+      Vd, vdcor, re  = terminalspeed(air,d,g,rhop,cg.delta, freeslipcor=False)
+      Vd, vdcor_fit, re  = terminalspeed(air,d,g,rhop,cg.logistic_delta, freeslipcor=False)
+      Rear[id,ip] = re
+      Vinf[id,ip] = vdcor
+      Vfit[id,ip] = vdcor_fit
+      
+fig,ax=plt.subplots(figsize=(4,3))      
+plt.contourf(presar/100.,dar*1.e6,Vinf, norm=colors.LogNorm(), levels=[1.e-5,1.e-4, 1.e-3, 1.e-2, 1.e-1, 1., 10., 14.])
+plt.xlabel (r'$P\ (hPa)$')
+plt.ylabel (r'$D\ (\mu{}m)$')
+plt.colorbar(format=ticker.FuncFormatter(fmt),label=r'$v_\infty{}\mathrm{(\,m\,s^{-1}})$')
+CS = plt.contour(presar/100.,dar*1.e6,Rear, levels=[0.1, 1., 10., 100., 1000.], colors='black')
+ax.clabel(CS, CS.levels, inline=True, fontsize=6)
+plt.yscale('log')
+ax.set_yticks([1.,10.,100.,1000.])
+plt.grid(color='black', linestyle=':', linewidth=0.5)
+plt.savefig('fig3_vinf.png',bbox_inches='tight',dpi=300)
+plt.close()
+
+fig,ax=plt.subplots(figsize=(4,3))      
+plt.contourf(presar/100.,dar*1.e6,(Vfit-Vinf)/Vinf*100, levels=[-2., -1., -0.5, -0.1, 0.1, 0.5, 1., 2.], cmap='bwr')
+plt.xlabel (r'$P\ (hPa)$')
+plt.ylabel (r'$D\ (\mu{}m)$')
+plt.colorbar(label='Fit error (%)')
+plt.yscale('log')
+ax.set_yticks([1.,10.,100.,1000.])
+plt.grid(color='black', linestyle=':', linewidth=0.5)
+plt.savefig('fig3_fiterror.png',bbox_inches='tight',dpi=300)
+plt.close()
+
+      
+
+# Make Fig 4 (with Slip-correction)
 for ip in range(npp):
    pres=presar[ip]
    air=chem.Mixture('air',T=temp,P=pres)
@@ -173,7 +213,7 @@ ax.clabel(CS2, CS2.levels, inline=True, fontsize=6)
 plt.yscale('log')
 ax.set_yticks([1.,10.,100.,1000.])
 plt.grid(color='black', linestyle=':', linewidth=0.5)
-plt.savefig('fig3_vinf.png',bbox_inches='tight',dpi=300)
+plt.savefig('fig4_vinf.png',bbox_inches='tight',dpi=300)
 plt.close()
 
 fig,ax=plt.subplots(figsize=(4,3))      
@@ -184,7 +224,7 @@ plt.colorbar(label='Fit error (%)')
 plt.yscale('log')
 ax.set_yticks([1.,10.,100.,1000.])
 plt.grid(color='black', linestyle=':', linewidth=0.5)
-plt.savefig('fig3_fiterror.png',bbox_inches='tight',dpi=300)
+plt.savefig('fig4_fiterror.png',bbox_inches='tight',dpi=300)
 plt.close()
 
       
