@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from matplotlib import ticker, cm, colors
 from matplotlib.ticker import StrMethodFormatter
 from freefallmethod import *
+from usstd import usstd
 
 def fmt(x, pos):
     a, b = '{:.1e}'.format(x).split('e')
@@ -94,7 +95,7 @@ plt.ylabel (r'$v_{\infty{}}\ (m/s)$')
 plt.xlabel (r'$D\ (\mu{}m)$')
 plt.grid(color='b', linestyle=':', linewidth=1)
 plt.legend()
-plt.savefig('fig1_vinf.png',bbox_inches='tight',dpi=300)
+plt.savefig('fig1_vinf.png',bbox_inches='tight',dpi=600)
 plt.close()
 
 fig,ax=plt.subplots(figsize=(4,3))
@@ -107,7 +108,7 @@ ax.set_xlim([1., 1.e3])
 plt.ylabel ('Re')
 plt.xlabel (r'$D\ (\mu{}m)$')
 plt.grid(color='b', linestyle=':', linewidth=1)
-plt.savefig('fig1_re.png',bbox_inches='tight',dpi=300)
+plt.savefig('fig1_re.png',bbox_inches='tight',dpi=600)
 plt.legend()
 plt.close()
 
@@ -123,7 +124,7 @@ plt.ylabel (r'$\left(v_{\infty{}}-v_{\infty{}}^{stokes}\right)/v_{\infty{}}^{sto
 plt.xlabel (r'$D\ (\mu{}m)$')
 plt.grid(color='b', linestyle=':', linewidth=1)
 plt.legend(loc='lower left')
-plt.savefig('fig1_corrections.png',bbox_inches='tight',dpi=300)
+plt.savefig('fig1_corrections.png',bbox_inches='tight',dpi=600)
 plt.close()
 
 
@@ -138,7 +139,10 @@ cg.logistic_fit()
 temp=298.15
 
 dar    = np.asarray([ 10**logd for logd in np.arange(-6.,-3,0.01) ])
-presar = np.linspace(20000,100000.,401)
+zar = np.linspace(0.,12000.,401)
+ptup, ttup = usstd(zar)
+presar=np.asarray(ptup)
+tempar=np.asarray(ttup)
 
 npp=presar.shape[0]
 nd=dar.shape[0]
@@ -151,8 +155,9 @@ cc_ar=np.zeros((nd,npp))
 # Make Fig 3 (without Slip-correction)
 for ip in range(npp):
    pres=presar[ip]
+   temp=tempar[ip]
    air=chem.Mixture('air',T=temp,P=pres)
-   print(pres)
+   print(pres, temp)
    for id in range(nd):
       d = dar[id]
       Vd, vdcor, re  = terminalspeed(air,d,g,rhop,cg.delta, freeslipcor=False)
@@ -173,7 +178,7 @@ plt.yscale('log')
 ax.set_yticks([1.,10.,100.,1000.])
 ax.yaxis.set_ticks_position('both')
 plt.grid(color='black', linestyle=':', linewidth=0.5)
-plt.savefig('fig3_vinf.png',bbox_inches='tight',dpi=300)
+plt.savefig('fig3_vinf.png',bbox_inches='tight',dpi=600)
 plt.close()
 
 fig,ax=plt.subplots(figsize=(4,3))      
@@ -185,7 +190,7 @@ plt.yscale('log')
 ax.set_yticks([1.,10.,100.,1000.])
 ax.yaxis.set_ticks_position('both')
 plt.grid(color='black', linestyle=':', linewidth=0.5)
-plt.savefig('fig3_fiterror.png',bbox_inches='tight',dpi=300)
+plt.savefig('fig3_fiterror.png',bbox_inches='tight',dpi=600)
 plt.close()
 
       
@@ -194,12 +199,13 @@ plt.close()
 Vfit_nocg=np.zeros((nd,npp))
 Vstokes_ar=np.zeros((nd,npp))
 levs = [0.10, 0.25, 0.5, 0.75, 0.90, 0.95, 0.98, 1.0, 1.02, 1.05, 1.1, 1.25, 1.5, 1.75, 1.90]
-norm = colors.BoundaryNorm(boundaries=levs, ncolors=256)
+norm = colors.BoundaryNorm(boundaries=levs, ncolors=256, extend='both')
 
 for ip in range(npp):
    pres=presar[ip]
+   temp=tempar[ip]
    air=chem.Mixture('air',T=temp,P=pres)
-   print(pres)
+   print(pres, temp)
    for id in range(nd):
       d = dar[id]
       dum, vdcor_fit, re  = terminalspeed(air,d,g,rhop,cg.logistic_delta, freeslipcor=True)
@@ -216,23 +222,23 @@ for ip in range(npp):
 fig,ax=plt.subplots(figsize=(4,3))      
 plt.xlabel (r'$P\ (hPa)$')
 plt.ylabel (r'$D\ (\mu{}m)$')
-CF = plt.contourf(presar/100.,dar*1.e6,Vfit/Vstokes_ar, cmap=mpl.colormaps['seismic'], vmin=0.0, vmax=2.0, levels=levs, norm=norm)
-CB = plt.colorbar(label=r'$\frac{v_\infty{}}{v_\infty{}^{Stokes}}$', ticks=levs)
+CF = plt.contourf(presar/100.,dar*1.e6,Vfit/Vstokes_ar, cmap=mpl.colormaps['seismic'], vmin=0.0, vmax=2.0, levels=levs, norm=norm, extend='both')
+CB = plt.colorbar(label=r'$\frac{v_\infty{}}{v_\infty{}^{Stokes}}$', ticks=levs, extend='both')
 CB.ax.tick_params(labelsize=7)
 
 #for t in CB.ax.get_yticklabels():
 #     t.set_fontsize(5)
 
-CS = plt.contour(presar/100.,dar*1.e6,Vfit/Vfit_nocg, levels=[0.10, 0.25, 0.5, 0.75, 0.90, 0.95, 0.98], colors='black')
-CS2 = plt.contour(presar/100.,dar*1.e6,Vfit_nocg/Vstokes_ar, levels=[1.02, 1.05, 1.1, 1.25, 1.5, 1.75, 1.90], colors='gray')
 CS3 = plt.contour(presar/100.,dar*1.e6,Rear, levels=[.1], colors='red')
 ax.yaxis.set_ticks_position('both')
+CS = plt.contour(presar/100.,dar*1.e6,Vfit/Vfit_nocg, levels=[0.10, 0.25, 0.5, 0.75, 0.90, 0.95, 0.98], colors='white', linewidths=0.5)
+CS2 = plt.contour(presar/100.,dar*1.e6,Vfit_nocg/Vstokes_ar, levels=[1.02, 1.05, 1.1, 1.25, 1.5, 1.75, 1.90], colors='black', linewidths=0.5)
 ax.clabel(CS, CS.levels, inline=True, fontsize=6)
 ax.clabel(CS2, CS2.levels, inline=True, fontsize=6)
 plt.yscale('log')
 ax.set_yticks([1.,10.,100.,1000.])
 plt.grid(color='black', linestyle=':', linewidth=0.5)
-plt.savefig('fig4_vfit.png',bbox_inches='tight',dpi=300)
+plt.savefig('fig4_vfit.png',bbox_inches='tight',dpi=600)
 plt.close()
 
 
