@@ -17,7 +17,7 @@ def fmt(x, pos):
     return r'${} \cdot 10^{{{}}}$'.format(a, b)
 
 def mfp(air):
-    return np.sqrt(np.pi/8.)*air.mu/0.4987445*1/np.sqrt(air.P*air.rho) # Jennings 1988
+    return np.sqrt(np.pi/8.)*mu(air.T)/0.4987445*1/np.sqrt(air.P*air.rho) # Jennings 1988
 
 def knudsen(air,d):
     return 2.*mfp(air)/d   # Seinfeld Eq. 8.1
@@ -26,10 +26,15 @@ def ccun(air,d):
     kn=knudsen(air,d)
     return 1. + kn*(1.257+0.4*np.exp(-1.1/kn))
 
+def mu(temp):
+    beta=1.458e-6
+    S=110.4
+    return beta*temp**1.5/(temp+S)
+
 def terminalspeed(air,d,g,rhop,deltafunc, freeslipcor=True):
    
-   Vd = ( (rhop - air.rho) * g * d**2. ) / (18.*air.mu)  # Vd is the Stokes free fall velocity
-   R = air.rho * Vd * d / (2.* air.mu)
+   Vd = ( (rhop - air.rho) * g * d**2. ) / (18.*mu(air.T))  # Vd is the Stokes free fall velocity
+   R = air.rho * Vd * d / (2.* mu(air.T))
    if(freeslipcor):
        Cc=ccun(air,d)
        R = R * Cc
@@ -50,7 +55,9 @@ pres=101325.
 air=chem.Mixture('air',T=temp,P=pres)
 print('density',air.rho)
 print('pressure',air.P)
-print('mu',air.mu)
+print('mu from thermo',air.mu)
+print('estimated mu',mu(air.T))
+print('mfp estimate:', mfp(air)
 
 dtup= [ 10**logd for logd in np.arange(-6.,-2.99,0.01) ]
 dar= np.asarray(dtup)
