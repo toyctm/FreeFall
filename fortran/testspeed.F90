@@ -32,16 +32,16 @@ program testspeed
   call testvalues(-7., -3.)
   print*,'==============================================='
   print*,'RANGE -7. TO -6.'
-  call calcspeed(-7., -6., 100000000, nz, lambda_vals, rho_a_vals, mu_vals)
+  call calcspeed(-7., -6., 10**8, nz, lambda_vals, rho_a_vals, mu_vals)
   print*,'==============================================='
   print*,'RANGE -6. TO -5.'
-  call calcspeed(-6., -5. , 100000000, nz, lambda_vals, rho_a_vals, mu_vals)
+  call calcspeed(-6., -5. , 10**8, nz, lambda_vals, rho_a_vals, mu_vals)
   print*,'==============================================='
   print*,'RANGE -5. TO -4.'
-  call calcspeed(-5., -4. , 100000000, nz, lambda_vals, rho_a_vals, mu_vals)
+  call calcspeed(-5., -4. , 10**8, nz, lambda_vals, rho_a_vals, mu_vals)
   print*,'==============================================='
   print*,'RANGE -4. TO -3.'
-  call calcspeed(-4., -3. , 100000000, nz, lambda_vals, rho_a_vals, mu_vals)
+  call calcspeed(-4., -3. , 10**8, nz, lambda_vals, rho_a_vals, mu_vals)
   print*,'==============================================='
 
 end program testspeed

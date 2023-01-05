@@ -9,13 +9,13 @@ expintervals=np.asarray([-7.,-6.,-5.,-4.,-3.])
 expcenters=10.**(np.asarray([-6.5, -5.5, -4.5, -3.5]))
 
 niters={}
-niters['fixpoint']=[ 0., 0., 1.23, 7.11 ]
-niters['bisection']=[ 0., 0., 3.38, 7.47 ]
+niters['fixpoint']=[ 0., 0., 1.40372717, 7.11220407 ]
+niters['bisection']=[ 0., 0., 4.41905737, 7.47149038 ]
 
 exetime={}
-exetime['fixpoint']=[ 47.35, 47.41, 84.62, 291. ]
-exetime['bisection']=[ 48.32, 48.27, 135.63, 260. ]
-exetime['aersett']=[ 45.92, 46.03, 42.76, 34.15 ]
+exetime['fixpoint']=[ 12.400000000000000, 12.699999999999999, 69.000000000000000, 272.69999999999999 ]
+exetime['bisection']=[ 12.480000000000000, 12.730000000000000, 132.16000000000000, 226.11000000000001 ]
+exetime['aersett']=[ 12.529999999999999, 12.890000000000001, 38.549999999999997, 35.579999999999998 ]
 
 labeldict={}
 labeldict['fixpoint']='Fixed-point method'
@@ -38,15 +38,15 @@ for method in ('aersett', 'bisection', 'fixpoint'):
   if(method=='bisection'):
       vpos=avgdict[method]+4.
   if(method=='aersett'):
-      vpos=avgdict[method]+4.
+      vpos=avgdict[method]-12.
   if(method=='fixpoint'):
-      vpos=avgdict[method]-18.
+      vpos=avgdict[method]-12.
 
-  plt.text(10**-4., vpos, "avg={:.1f} ns".format(avgdict[method]), color=colordict[method], fontsize='x-small')
+  plt.text(1.3e-4, vpos, "avg={:.1f} ns".format(avgdict[method]), color=colordict[method], fontsize='x-small')
 plt.legend(loc='upper left')
 plt.xscale('log')
 ax.set_xlim([1.e-7,1.e-3])
-ax.set_ylim([0.,500.])
+ax.set_ylim([0.,300.])
 plt.ylabel ('Execution time (ns)')
 plt.xlabel (r'$D\ (\mu{}\mathrm{m})$')
 plt.savefig('exetime.png',bbox_inches='tight',dpi=300)
