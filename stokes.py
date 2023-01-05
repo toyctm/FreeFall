@@ -57,7 +57,7 @@ print('density',air.rho)
 print('pressure',air.P)
 print('mu from thermo',air.mu)
 print('estimated mu',mu(air.T))
-print('mfp estimate:', mfp(air)
+print('mfp estimate:', mfp(air))
 
 dtup= [ 10**logd for logd in np.arange(-6.,-2.99,0.01) ]
 dar= np.asarray(dtup)
@@ -238,7 +238,7 @@ CB.ax.tick_params(labelsize=7)
 
 CS3 = plt.contour(presar/100.,dar*1.e6,Rear, levels=[.1], colors='red')
 ax.yaxis.set_ticks_position('both')
-CS = plt.contour(presar/100.,dar*1.e6,Vfit/Vfit_nocg, levels=[0.10, 0.25, 0.5, 0.75, 0.90, 0.95, 0.98], colors='white', linewidths=0.5)
+CS = plt.contour(presar/100.,dar*1.e6,Vfit/Vfit_nocg, levels=[0.10, 0.25, 0.5, 0.75, 0.90, 0.95, 0.98, 0.99], colors='white', linewidths=0.5)
 CS2 = plt.contour(presar/100.,dar*1.e6,Vfit_nocg/Vstokes_ar, levels=[1.02, 1.05, 1.1, 1.25, 1.5, 1.75, 1.90], colors='black', linewidths=0.5)
 ax.clabel(CS, CS.levels, inline=True, fontsize=6)
 ax.clabel(CS2, CS2.levels, inline=True, fontsize=6)
