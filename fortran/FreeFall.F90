@@ -8,7 +8,7 @@ module FreeFall
   public :: Re_iter, Re_bisection, Re_aersett, iprec
   
   integer, parameter :: iprec=4  ! 4 or 8
-  real(kind=iprec), parameter  :: eps=2.5e-2
+  real(kind=iprec), parameter  :: eps=2.e-2
   real(kind=iprec), parameter  :: g = 9.81
   real(kind=iprec), parameter  :: Re_0 = 0.0116
 
