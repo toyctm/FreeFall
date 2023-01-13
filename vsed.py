@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import StrMethodFormatter
 from scipy.optimize import curve_fit
 from freefallmethod import *
+from scipy.optimize import fsolve
 
 
 # Set the list of virtual Reynolds numbers
@@ -46,6 +47,14 @@ plt.savefig('fig2_delta.png',bbox_inches='tight',dpi=300)
 for method in methodtup:
   print('Fitting for method',method.name)
   method.logistic_fit()
+
+def f(x):
+  return cg.logistic_delta(x)+0.01
+Re_0 = fsolve(f, 0.03)
+print('==============================================')
+print('Virtual Reynolds number for delta=0.01', Re_0)
+print('double-check', cg.logistic_delta(Re_0))
+print('==============================================')
 
 
 
