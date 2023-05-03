@@ -7,7 +7,11 @@ from matplotlib.ticker import StrMethodFormatter
 from scipy.optimize import curve_fit
 from freefallmethod import *
 from scipy.optimize import fsolve
+import sys
 
+# CI condition for success
+success=True
+expected_pars = [4.335e-01, 0.8921, -1.905]
 
 # Set the list of virtual Reynolds numbers
 rtup = [ 10**logr for logr in np.arange(-6.,5.,0.1) ]
@@ -31,7 +35,7 @@ plt.xscale('log')
 plt.yscale('log')
 ax.set_xlim([1.e-5,1.e+5])
 plt.legend()
-plt.savefig('fig2_Cd.png',bbox_inches='tight',dpi=300)
+plt.savefig('artifacts/fig2_Cd.png',bbox_inches='tight',dpi=300)
 
 fig,ax=plt.subplots(figsize=(4,3))
 for method in methodtup:
@@ -42,12 +46,20 @@ plt.xlabel (r'$R$')
 ax.set_xlim([1.e-5,1.e+5])
 plt.grid(color='b', linestyle=':', linewidth=1)
 plt.legend()
-plt.savefig('fig2_delta.png',bbox_inches='tight',dpi=300)
+plt.savefig('artifacts/fig2_delta.png',bbox_inches='tight',dpi=300)
 
 for method in methodtup:
   print('Fitting for method',method.name)
   method.logistic_fit()
-
+  if (method.name=='Clift-Gauvin'):
+    print('parameters', method.wpopt)
+    print('covariance', method.wpcov)
+    if(method.wpopt == expected_pars):
+      success=True
+      print('SUCCESS')
+    else:
+      success=False
+      print('FAILURE')
 def f(x):
   return cg.logistic_delta(x)+0.01
 Re_0 = fsolve(f, 0.03)
@@ -55,6 +67,11 @@ print('==============================================')
 print('Virtual Reynolds number for delta=0.01', Re_0)
 print('double-check', cg.logistic_delta(Re_0))
 print('==============================================')
+
+if(success):
+  sys.exit(0)
+else:
+  sys.exit(1)
 
 
 

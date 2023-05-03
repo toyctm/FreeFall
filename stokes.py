@@ -102,7 +102,7 @@ plt.ylabel (r'$v_{\infty{}}\ (m/s)$')
 plt.xlabel (r'$D\ (\mu{}m)$')
 plt.grid(color='b', linestyle=':', linewidth=1)
 plt.legend()
-plt.savefig('fig1_vinf.png',bbox_inches='tight',dpi=600)
+plt.savefig('artifacts/fig1_vinf.png',bbox_inches='tight',dpi=600)
 plt.close()
 
 fig,ax=plt.subplots(figsize=(4,3))
@@ -115,7 +115,7 @@ ax.set_xlim([1., 1.e3])
 plt.ylabel ('Re')
 plt.xlabel (r'$D\ (\mu{}m)$')
 plt.grid(color='b', linestyle=':', linewidth=1)
-plt.savefig('fig1_re.png',bbox_inches='tight',dpi=600)
+plt.savefig('artifacts/fig1_re.png',bbox_inches='tight',dpi=600)
 plt.legend()
 plt.close()
 
@@ -131,7 +131,7 @@ plt.ylabel (r'$\left(v_{\infty{}}-v_{\infty{}}^{stokes}\right)/v_{\infty{}}^{sto
 plt.xlabel (r'$D\ (\mu{}m)$')
 plt.grid(color='b', linestyle=':', linewidth=1)
 plt.legend(loc='lower left')
-plt.savefig('fig1_corrections.png',bbox_inches='tight',dpi=600)
+plt.savefig('artifacts/fig1_corrections.png',bbox_inches='tight',dpi=600)
 plt.close()
 
 
@@ -185,7 +185,7 @@ plt.yscale('log')
 ax.set_yticks([1.,10.,100.,1000.])
 ax.yaxis.set_ticks_position('both')
 plt.grid(color='black', linestyle=':', linewidth=0.5)
-plt.savefig('fig3_vinf.png',bbox_inches='tight',dpi=600)
+plt.savefig('artifacts/fig3_vinf.png',bbox_inches='tight',dpi=600)
 plt.close()
 
 fig,ax=plt.subplots(figsize=(4,3))      
@@ -197,7 +197,7 @@ plt.yscale('log')
 ax.set_yticks([1.,10.,100.,1000.])
 ax.yaxis.set_ticks_position('both')
 plt.grid(color='black', linestyle=':', linewidth=0.5)
-plt.savefig('fig3_fiterror.png',bbox_inches='tight',dpi=600)
+plt.savefig('artifacts/fig3_fiterror.png',bbox_inches='tight',dpi=600)
 plt.close()
 
       
@@ -245,7 +245,7 @@ ax.clabel(CS2, CS2.levels, inline=True, fontsize=6)
 plt.yscale('log')
 ax.set_yticks([1.,10.,100.,1000.])
 plt.grid(color='black', linestyle=':', linewidth=0.5)
-plt.savefig('fig4_vfit.png',bbox_inches='tight',dpi=600)
+plt.savefig('artifacts/fig4_vfit.png',bbox_inches='tight',dpi=600)
 plt.close()
 
 

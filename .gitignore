@@ -4,5 +4,6 @@ __pycache__/*
 */\#*
 fortran/*.out
 fortran/*.mod
+artifacts/*
 *~
 */*~
